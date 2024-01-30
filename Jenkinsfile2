@@ -10,6 +10,11 @@ pipeline {
                 sh 'mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Theoalban_week16'
             }
             }
+        stage ('upload artifact'){
+            steps{
+                sh 'curl -uadmin:AminPassword1 -T target/bio*.jar "http://192.168.56.150:8081/artifactory/"'
+            }
+            }
         }
         stage ('all maven commands'){
             steps{
