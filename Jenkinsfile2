@@ -10,11 +10,18 @@ pipeline {
                 sh 'mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Theoalban_week16'
             }
             }
+
         }
         stage ('all maven commands'){
             steps{
                 sh 'mvn clean test compile install package'
             }
+        }
+        stage ('upload artifact'){
+            steps{
+                sh 'curl -uadmin:cmVmdGtuOjAxOjE3MzgxNDA4NzE6dVZFZ3JCOFE0N2VVRG9qbUx4NjZjV2RFWVZJ -T target/bio*.jar "http://192.168.56.150:8081/artifactory/geoapp/"'
+            }
+            
         }
         
     }
