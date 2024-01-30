@@ -19,7 +19,7 @@ pipeline {
         }
         stage ('upload artifact'){
             steps{
-                sh 'curl -u admin:AdminPassword1 -T target/bioMedical-0.0.2-SNAPSHOT.jar "http://192.168.56.150:8081/artifactory/"'
+                sh 'curl -u admin:AdminPassword1 -T target/bioMedical-0.0.2-SNAPSHOT.jar "http://192.168.56.150:8081/artifactory/v1.0.0" '
             }
             
         }
