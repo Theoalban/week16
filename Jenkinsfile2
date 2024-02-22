@@ -23,6 +23,15 @@ pipeline {
             }
             
         }
+        stage('Login to Docker Hub') {
+            steps {
+                script {
+                    // Login to Docker Hub
+                    sh 'docker login -u theoalban -p Nzuimanto'
+                }
+            }
+        }
+
         stage ('push image to Docker Hub') {
             steps {
                 script {
