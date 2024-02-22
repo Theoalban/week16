@@ -23,6 +23,16 @@ pipeline {
             }
             
         }
-        
+        stage ('push image to Docker Hub') {
+            steps {
+                script {
+                    // Tag the Docker image
+                    sh 'docker tag geoapp:latest theoalban/geoapp:latest'
+
+                    // Push the Docker image to Docker Hub
+                    sh 'docker push theoalban/geoapp:latest'
+                }
+            }
+        }
     }
 }
