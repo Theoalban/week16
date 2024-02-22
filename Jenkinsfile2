@@ -23,6 +23,17 @@ pipeline {
             }
             
         }
+        stage('Login to Docker Hub and build image') {
+            steps {
+                script {
+                    // Login to Docker Hub
+                    sh 'docker login -u theoalban -p Nzuimanto'
+                    sh 'docker build -t geoapp .'
+
+                }
+            }
+        }
+
         stage ('push image to Docker Hub') {
             steps {
                 script {
