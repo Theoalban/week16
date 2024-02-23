@@ -1,0 +1,61 @@
+pipeline {
+
+  agent {
+
+    kubernetes {
+
+      label 'my-kubernetes-agent'
+
+    }
+
+  }
+
+  
+
+  stages {
+
+    stage('Clone repository') {
+
+      steps {
+
+        git 'https://github.com/Theoalban/week16.git'
+
+      }
+
+    }
+
+    
+
+    stage('Build and push Docker image') {
+
+      steps {
+
+        sh 'docker build -t my-image:${BUILD_ID} .'
+
+        sh 'docker push my-image:${BUILD_ID}'
+
+      }
+
+    }
+
+    
+
+    stage('Deploy to Kubernetes') {
+
+      steps {
+
+        kubernetesDeploy(
+
+          configs: 'geo-app-manifest.yaml',
+
+          kubeconfigId: 'kubernetes'
+
+        )
+
+      }
+
+    }
+
+  }
+
+}
