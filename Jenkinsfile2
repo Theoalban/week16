@@ -48,17 +48,10 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    try {
-                        KubernetesDeploy(
-                            configs: "app/geo-app-deploy.yaml",
-                            kubeconfigId: "kubernetes"
-                        )
-                    } catch (err) {
-                        // Handle deployment errors
-                        echo "Deployment to Kubernetes failed: ${err}"
-                        currentBuild.result = 'FAILURE'
-                        error "Deployment failed"
-                    }
+                  KubernetesDeploy(
+                            configs: "app/geo-app-deploy.yaml", kubeconfigId: "kubernetes")
+                    
+                    
                 }
             }
         }
