@@ -49,10 +49,11 @@ pipeline {
             steps {
                 script {
                     // Apply Kubernetes Deployment
-                    sh 'kubectl apply -f geo-app-manifest.yaml'
+                    // sh 'kubectl apply -f geo-app-manifest.yaml'
 
                     // Expose the Deployment on NodePort 3008
-                    sh 'kubectl expose deployment geo-app-manifest.yaml --type=NodePort --port=8082 --target-port=8082 --name=geo-app-service --node-port=30009'
+                    //sh 'kubectl expose deployment geo-app-manifest.yaml --type=NodePort --port=8082 --target-port=8082 --name=geo-app-service --node-port=30009'
+                    KubernetesDeploy(configs: "geo-app-manifest.yaml", kubeconfigId: "kubernetes")
                 }
             }
         }
