@@ -50,7 +50,7 @@ pipeline {
                 script {
                     try {
                         KubernetesDeploy(
-                            configs: "geo-app-manifest.yaml",
+                            configs: "app/geo-app-deploy.yaml",
                             kubeconfigId: "kubernetes"
                         )
                     } catch (err) {
@@ -58,10 +58,10 @@ pipeline {
                         echo "Deployment to Kubernetes failed: ${err}"
                         currentBuild.result = 'FAILURE'
                         error "Deployment failed"
+                    }
                 }
             }
         }
-    }
 
 
     }
