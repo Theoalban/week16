@@ -1,0 +1,63 @@
+pipeline {
+    agent {
+        label 'jenkins-agent1'
+    }
+    tools {
+        maven 'M2_HOME'
+    }
+    stages {
+        stage ('sonarqube scan'){
+            steps{
+                withSonarQubeEnv('sonarserver'){
+                sh 'mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Theoalban_week16'
+            }
+            }
+
+        }
+        stage ('all maven commands'){
+            steps{
+                sh 'mvn clean test compile install package'
+            }
+        }
+        stage ('upload artifact'){
+            steps{
+                sh 'curl -uadmin:cmVmdGtuOjAxOjE3MzgxNDA4NzE6dVZFZ3JCOFE0N2VVRG9qbUx4NjZjV2RFWVZJ -T target/bio*.jar "http://192.168.56.150:8081/artifactory/geoapp/"'
+            }
+            
+        }
+        stage('Login to Docker Hub and build image') {
+            steps {
+                script {
+                    // Login to Docker Hub
+                    sh 'docker login -u theoalban -p Nzuimanto'
+                    sh 'docker build -t geoapp .'
+
+                }
+            }
+        }
+
+        stage ('push image to Docker Hub') {
+            steps {
+                script {
+                    // Tag the Docker image
+                    sh 'docker tag geoapp:latest theoalban/geoapp:${BUILD_ID}'
+
+                    // Push the Docker image to Docker Hub
+                    sh 'docker push theoalban/geoapp:${BUILD_ID}'
+                }
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                  KubernetesDeploy(
+                            configs: "app/geo-app-deploy.yaml", kubeconfigId: "kubernetes")
+                    
+                    
+                }
+            }
+        }
+
+
+    }
+}
