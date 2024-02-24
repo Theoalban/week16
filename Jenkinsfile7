@@ -42,14 +42,7 @@ pipeline {
     stage('Deploy to Kubernetes') {
 
       steps {
-
-        kubernetesDeploy(
-
-          configs: 'geo-app-manifest.yaml',
-
-          kubeconfigId: 'kubernetes'
-
-        )
+         sh 'kubectl apply -f geo-app-manifest.yaml'
 
       }
 
