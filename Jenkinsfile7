@@ -1,13 +1,7 @@
 pipeline {
-
   agent {
-
-    kubernetes {
-         // No inheritFrom 'my-parent-pod-template'
-
+        label 'jenkins-agent1'
     }
-
-  }
 
   
 
