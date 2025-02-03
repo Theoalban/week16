@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+
+    environment {
+        REGISTRY = 'your-dockerhub-username'
+        IMAGE_NAME = 'your-app'
+        IMAGE_TAG = "latest"
+        K8S_NAMESPACE = "default"
+        DEPLOYMENT_NAME = "your-app-deployment"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/your-repo.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "docker build -t $REGISTRY/$IMAGE_NAME:$IMAGE_TAG ."
+                }
+            }
+        }
+
+        stage('Push Image to Registry') {
+            steps {
+                script {
+                    withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
+                        sh "docker push $REGISTRY/$IMAGE_NAME:$IMAGE_TAG"
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    sh """
+                    kubectl set image deployment/$DEPLOYMENT_NAME $IMAGE_NAME=$REGISTRY/$IMAGE_NAME:$IMAGE_TAG -n $K8S_NAMESPACE
+                    kubectl rollout status deployment/$DEPLOYMENT_NAME -n $K8S_NAMESPACE
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment Successful!'
+        }
+        failure {
+            echo 'Deployment Failed!'
+        }
+    }
+}
